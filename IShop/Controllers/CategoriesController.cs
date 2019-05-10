@@ -1,5 +1,6 @@
 ﻿using IShop.BusinessLogic.Services;
 using IShop.Domain.Models;
+using IShop.Filters;
 using System.Linq;
 using System.Web.Http;
 
@@ -16,6 +17,7 @@ namespace IShop.Controllers
             return Ok(_categoryService.GetSortedList(sortParam));
         }
 
+        [ShopAuthenticationFilter]
         [HttpGet]
         public IHttpActionResult Get(int id)
         {

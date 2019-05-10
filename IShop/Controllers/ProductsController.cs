@@ -1,5 +1,6 @@
 ﻿using IShop.BusinessLogic.Services;
 using IShop.Domain.Models;
+using IShop.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace IShop.Controllers
         private IProductService _productService = new ProductService();
 
         [HttpGet]
+        [OverrideAuthentication]
         public IHttpActionResult GatAll()
         {
             return Ok(_productService.GetAll());
@@ -26,14 +28,15 @@ namespace IShop.Controllers
         }
 
         [HttpPost]
+        [ModelStateValidationFilter]
         public HttpResponseMessage Add([FromBody] Product product)
         {
-            if(!ModelState.IsValid)
-            {
-                var errorMessage = new HttpResponseMessage(HttpStatusCode.BadRequest);
-                errorMessage.Content = new StringContent("Name can't be empty");
-                return errorMessage;
-            }
+            //if(!ModelState.IsValid)
+            //{
+            //    var errorMessage = new HttpResponseMessage(HttpStatusCode.BadRequest);
+            //    errorMessage.Content = new StringContent("Name can't be empty");
+            //    return errorMessage;
+            //}
             _productService.Add(product);
             return new HttpResponseMessage(HttpStatusCode.Created);
         }

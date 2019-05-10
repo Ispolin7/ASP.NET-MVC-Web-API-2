@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Routing.Constraints;
+using IShop.Filters;
 using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json.Serialization;
 
@@ -47,6 +48,7 @@ namespace IShop
                     action = new AlphaRouteConstraint()
                 }
             );
+            config.Filters.Add(new ShopExceptionFilter());
         }
     }
 }

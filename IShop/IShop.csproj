@@ -222,6 +222,12 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
+    <Compile Include="Filters\ExtendedActionFilter.cs" />
+    <Compile Include="Filters\ModelStateValidationFilter.cs" />
+    <Compile Include="Filters\ShopAuthenticationFilter.cs" />
+    <Compile Include="Filters\ShopAuthorizationFilter.cs" />
+    <Compile Include="Filters\ShopExceptionFilter.cs" />
+    <Compile Include="Filters\SimpleActionFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
