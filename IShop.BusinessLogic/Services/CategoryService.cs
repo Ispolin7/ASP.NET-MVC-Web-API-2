@@ -1,8 +1,10 @@
-﻿using IShop.Domain.Models;
+﻿using IShop.BusinessLogic.Models;
+using IShop.Domain.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace IShop.BusinessLogic.Services
 {
@@ -16,12 +18,23 @@ namespace IShop.BusinessLogic.Services
 
         List<Category> GetAll();
 
+        CategoryView GetAllProducts(int id);
+
         Category Get(int id);
+
+        /// <summary>
+        /// Get sorted list
+        /// </summary>
+        /// <param name="sortParam">parameter by which want to sort</param>
+        /// <returns>IEnumerable</returns>
+        IEnumerable<Category> GetSortedList(string sortParam);
     }
 
     public class CategoryService : ServiceBase, ICategoryService
     {
-        private const string FilePath = @"\bin\Data\Categories.txt";
+        private const string CategoryFilePath = @"\bin\Data\Categories.txt";
+        //private const string ProductFilePath = @"\bin\Data\Products.txt";
+        private readonly ProductService _productService;
 
         private List<Category> _categories;
 
@@ -33,6 +46,7 @@ namespace IShop.BusinessLogic.Services
                 savedData != null
                 ? savedData
                 : new List<Category>();
+            _productService = new ProductService();
         }
 
         public void Add(Category category)
@@ -71,6 +85,25 @@ namespace IShop.BusinessLogic.Services
             return _categories;
         }
 
+        /// <summary>
+        /// Get all categories with products
+        /// </summary>
+        /// <returns>category list</returns>
+        public CategoryView GetAllProducts(int id)
+        {
+            var products = _productService.GetProductsByCategory(id);
+            var category = this.Get(id);
+            category.products = products;
+
+            return new CategoryView(category);
+        }
+
+        public IEnumerable<Category> GetSortedList(string sortParam)
+        {
+            var propertyInfo = typeof(Category).GetProperty(sortParam);
+            return _categories.OrderBy(c => propertyInfo.GetValue(c));
+        }
+
         public void Update(Category category)
         {
             var oldCategory = Get(category.Id);
@@ -82,7 +115,7 @@ namespace IShop.BusinessLogic.Services
 
         private List<Category> ReadData()
         {
-            var data = File.ReadAllText(GetStoragePath(FilePath));
+            var data = File.ReadAllText(GetStoragePath(CategoryFilePath));
 
             return JsonConvert.DeserializeObject<List<Category>>(data);
         }
@@ -91,7 +124,14 @@ namespace IShop.BusinessLogic.Services
         {
             var data = JsonConvert.SerializeObject(_categories);
 
-            File.WriteAllText(GetStoragePath(FilePath), data);
+            File.WriteAllText(GetStoragePath(CategoryFilePath), data);
         }
+
+        //private List<Product> GetProducts()
+        //{
+        //    var data = File.ReadAllText(GetStoragePath(ProductFilePath));
+
+        //    return JsonConvert.DeserializeObject<List<Product>>(data);
+        //}
     }
 }

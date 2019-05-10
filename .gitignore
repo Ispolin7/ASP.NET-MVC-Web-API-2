@@ -1,0 +1,11 @@
+.vs
+/IShop/bin
+/IShop/obj
+/packages
+/IShop.Domain/bin
+/IShop.Domain/obj
+/IShop.BusinessLogic/bin
+/IShop.BusinessLogic/obj
+/IShop.Tests/bin
+/IShop.Tests/obj
+

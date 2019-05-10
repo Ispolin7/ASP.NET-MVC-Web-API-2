@@ -1,10 +1,5 @@
 ﻿using IShop.BusinessLogic.Services;
 using IShop.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 
 namespace IShop.Controllers
@@ -14,9 +9,9 @@ namespace IShop.Controllers
         private ICategoryService _categoryService = new CategoryService();
 
         [HttpGet]
-        public IHttpActionResult GatAll()
+        public IHttpActionResult GatAll([FromUri] string sortParam = "Id")
         {
-            return Ok(_categoryService.GetAll());
+            return Ok(_categoryService.GetSortedList(sortParam));
         }
 
         [HttpGet]
@@ -53,6 +48,14 @@ namespace IShop.Controllers
         {
             _categoryService.Delete(id);
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("api/categories/{id}/products")]
+        public IHttpActionResult GatRelationships([FromUri] int id)
+        {
+            var category = _categoryService.GetAllProducts(id);
+            return Ok(category);
         }
     }
 }

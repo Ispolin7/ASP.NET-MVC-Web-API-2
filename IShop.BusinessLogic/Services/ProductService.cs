@@ -17,6 +17,8 @@ namespace IShop.BusinessLogic.Services
         List<Product> GetAll();
 
         Product Get(int id);
+
+        IEnumerable<Product> GetProductsByCategory(int id);
     }
 
     public class ProductService : ServiceBase, IProductService
@@ -69,6 +71,11 @@ namespace IShop.BusinessLogic.Services
         public List<Product> GetAll()
         {
             return _products;
+        }
+
+        public IEnumerable<Product> GetProductsByCategory(int categoryId)
+        {
+            return _products.Where(p => p.CategoryId == categoryId).ToList();
         }
 
         public void Update(Product product)
