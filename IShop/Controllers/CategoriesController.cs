@@ -1,9 +1,11 @@
 ﻿using IShop.BusinessLogic.Services;
 using IShop.Domain.Models;
+using System.Linq;
 using System.Web.Http;
 
 namespace IShop.Controllers
 {
+    [RoutePrefix("api/categories")]
     public class CategoriesController : ApiController
     {
         private ICategoryService _categoryService = new CategoryService();
@@ -18,7 +20,7 @@ namespace IShop.Controllers
         public IHttpActionResult Get(int id)
         {
             var category = _categoryService.Get(id);
-            if(category == null)
+            if (category == null)
             {
                 return NotFound();
             }
@@ -28,7 +30,7 @@ namespace IShop.Controllers
         [HttpPost]
         public IHttpActionResult Add([FromBody] Category category)
         {
-            if(string.IsNullOrEmpty(category.Name))
+            if (string.IsNullOrEmpty(category.Name))
             {
                 return BadRequest("Can't be empty");
             }
@@ -51,11 +53,27 @@ namespace IShop.Controllers
         }
 
         [HttpGet]
-        [Route("api/categories/{id}/products")]
+        [Route("{id}/products")]
         public IHttpActionResult GatRelationships([FromUri] int id)
         {
             var category = _categoryService.GetAllProducts(id);
             return Ok(category);
+        }
+
+        [HttpGet]
+        [Route("search")]
+        public IHttpActionResult Search(string name)
+        {
+            var categories = _categoryService.GetAll();
+            categories = categories.Where(c => c.Name.ToLower().Contains(name)).ToList();
+            return Ok(categories);
+        }
+
+        [HttpGet]
+        [Route("count")]
+        public IHttpActionResult ProductsCount()
+        {
+            return Ok(_categoryService.GetCountedProducts());
         }
     }
 }

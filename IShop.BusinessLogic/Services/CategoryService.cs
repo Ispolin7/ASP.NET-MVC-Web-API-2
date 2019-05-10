@@ -28,6 +28,7 @@ namespace IShop.BusinessLogic.Services
         /// <param name="sortParam">parameter by which want to sort</param>
         /// <returns>IEnumerable</returns>
         IEnumerable<Category> GetSortedList(string sortParam);
+        IEnumerable<object> GetCountedProducts();
     }
 
     public class CategoryService : ServiceBase, ICategoryService
@@ -96,6 +97,16 @@ namespace IShop.BusinessLogic.Services
             category.products = products;
 
             return new CategoryView(category);
+        }
+
+        public IEnumerable<object> GetCountedProducts()
+        {
+            var products = _productService.GetAll();
+            return _categories.Select(c => new
+            {
+                Name = c.Name,
+                Product = products.Where(p => p.CategoryId == c.Id).Count()
+            });
         }
 
         public IEnumerable<Category> GetSortedList(string sortParam)
